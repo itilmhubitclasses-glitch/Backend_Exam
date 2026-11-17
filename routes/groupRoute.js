@@ -7,6 +7,7 @@ const {
   getGroupById,
   updateGroup,
   groupDelete,
+  searchGroup,
 } = require("../controllers/group.controller");
 
 const { createGroup6ValidationSchema, updateGroup6ValidationSchema } = require("../validation/groupValidation");
@@ -209,5 +210,29 @@ group.put("/updateGroup/:id", validateSchema(updateGroup6ValidationSchema),updat
  *         description: Internal server error
  */
 group.delete("/groupDelete/:id", groupDelete);
+
+/**
+ * @swagger
+ * /group/searchGroup:
+ *   get:
+ *     summary: group ni qidirish
+ *     tags: [Group]
+ *     description: Qidiruv so'rovi orqali group izlash
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         description: Qidiruv so'rovi orqali group izlash
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *      '200':
+ *        description: Qidiruv natijalari muvaffaqiyatli qaytarildi
+ *      '404':
+ *        description: group topilmadi
+ *      '500':
+ *        description: Ichki server xatosi
+ */
+group.get("/searchGroup", searchGroup);
 
 module.exports = { group };

@@ -149,10 +149,41 @@ const deleteLid = async (req, res) => {
   }
 };
 
+// ----------- Search Lid ----------- //
+const searchLid = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    if (!query || typeof query != "string") {
+      return res.status(400).json({ message: "Invalid search query" });
+    }
+
+    const result = await Lid.find({
+      $or: [
+        { first_name: { $regex: query, $options: "i" } },
+        { last_name: { $regex: query, $options: "i" } },
+        { phone_number: { $regex: query, $options: "i" } },
+        { test_date: { $regex: query, $options: "i" } },
+        { trial_lesson_date: { $regex: query, $options: "i" } },
+        { trial_lesson_time: { $regex: query, $options: "i" } },
+      ],
+    });
+
+    if (result.length === 0) {
+      return res.json({ message: "Bunday lid topilmadi" });
+    }
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching lid:", error);
+    res.status(500).json({ message: "Server error: Failed to fetch lid" });
+  }
+};
+
 module.exports = {
   addLid,
   getLids,
   getLidById,
   updateLid,
   deleteLid,
+  searchLid,
 };

@@ -9,6 +9,24 @@ const {
 
 const stuff_role = Router();
 
+const {
+  createStuffRole3ValidationSchema,
+  updateStuffRole3ValidationSchema,
+} = require("../validation/stuff_roleValidation");
+
+const validateSchema = (schema) => (req, res, next) => {
+  const validationResult = schema.validate(req.body);
+
+  if (validationResult.error) {
+    return res.status(400).json({
+      success: false,
+      message: validationResult.error.details[0].message,
+    });
+  }
+
+  next();
+};
+
 /**
  * @swagger
  * /stuff_role/addStuff_role:
@@ -39,7 +57,11 @@ const stuff_role = Router();
  *      '500':
  *        description: ichki server xatosi
  */
-stuff_role.post("/addStuff_role", addStuff_role);
+stuff_role.post(
+  "/addStuff_role",
+  validateSchema(createStuffRole3ValidationSchema),
+  addStuff_role
+);
 
 /**
  * @swagger
@@ -141,7 +163,11 @@ stuff_role.delete("/stuff_roleDelete/:id", stuff_roleDelete);
  *       '500':
  *         description: Ichki server xatosi
  */
-stuff_role.put("/updateStuff_role/:id", updateStuff_role);
+stuff_role.put(
+  "/updateStuff_role/:id",
+  validateSchema(updateStuffRole3ValidationSchema),
+  updateStuff_role
+);
 
 
 module.exports = { stuff_role };

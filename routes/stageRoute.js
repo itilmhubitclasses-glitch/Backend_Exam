@@ -7,6 +7,7 @@ const {
   getStageById,
   stageDelete,
   updateStage,
+  searchStage,
 } = require("../controllers/stage.controller");
 
 const {
@@ -155,5 +156,29 @@ stages.delete("/stageDelete/:id", stageDelete);
  *         description: Ichki server xatosi
  */
 stages.put("/updateStage/:id",validateSchema(updateStage4ValidationSchema) ,updateStage);
+
+/**
+ * @swagger
+ * /stages/searchStage:
+ *   get:
+ *     summary: stage ni qidirish
+ *     tags: [Stages]
+ *     description: Qidiruv so'rovi orqali stage izlash
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         description: Qidiruv so'rovi orqali stage izlash
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *      '200':
+ *        description: Qidiruv natijalari muvaffaqiyatli qaytarildi
+ *      '404':
+ *        description: stage topilmadi
+ *      '500':
+ *        description: Ichki server xatosi
+ */
+stages.get("/searchStage", searchStage);
 
 module.exports = { stages };

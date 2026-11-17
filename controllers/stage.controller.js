@@ -123,10 +123,36 @@ const updateStage = async (req, res) => {
   }
 };
 
+// ----------- Search Stage ----------- //
+const searchStage = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    if (!query || typeof query != "string") {
+      return res.status(400).json({ message: "Invalid search query" });
+    }
+
+    const result = await Stage.find({
+      $or: [
+        { names: { $regex: query, $options: "i" } },
+      ],
+    });
+
+    if (result.length === 0) {
+      return res.json({ message: "Bunday stage topilmadi" });
+    }
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching stage:", error);
+    res.status(500).json({ message: "Server error: Failed to fetch stage" });
+  }
+};
+
 module.exports = {
   addStage,
   getStage,
   getStageById,
   stageDelete,
   updateStage,
+  searchStage,
 };

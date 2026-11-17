@@ -123,10 +123,36 @@ const lid_statusDelete = async (req, res) => {
   }
 };
 
+const searchLid_status = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    if (!query || typeof query != "string") {
+      return res.status(400).json({ message: "Invalid search query" });
+    }
+
+    const result = await Lid_status.find({
+      $or: [
+        { status: { $regex: query, $options: "i" } },
+      ],
+    });
+
+    if (result.length === 0) {
+      return res.json({ message: "Bunday lid_status topilmadi" });
+    }
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching lid_status:", error);
+    res.status(500).json({ message: "Server error: Failed to fetch lid_status" });
+  }
+};
+
 module.exports = {
   addLid_status,
   getLid_status,
   getLid_statusById,
   updateLid_status,
   lid_statusDelete,
+  searchLid_status,
 };
+

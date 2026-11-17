@@ -7,7 +7,26 @@ const {
   getStudentById,
   updateStudents,
   deleteStudent,
+  searchStudent,
 } = require("../controllers/students.controller");
+
+const {
+  createStudent12ValidationSchema,
+  updateStudent12ValidationSchema,
+} = require("../validation/studentsValidation");
+
+const validateSchema = (schema) => (req, res, next) => {
+  const validationResult = schema.validate(req.body);
+
+  if (validationResult.error) {
+    return res.status(400).json({
+      success: false,
+      message: validationResult.error.details[0].message,
+    });
+  }
+
+  next();
+};
 
 /**
  * @swagger
@@ -51,7 +70,7 @@ const {
  *      '500':
  *        description: ichki server xatosi
  */
-students.post("/addStudent", addStudent);
+students.post("/addStudent", validateSchema(createStudent12ValidationSchema), addStudent);
 
 /**
  * @swagger
@@ -138,7 +157,7 @@ students.get("/getStudentById/:id", getStudentById);
  *      '500':
  *        description: Server Interval error
  */
-students.put("/updateStudents/:id", updateStudents);
+students.put("/updateStudents/:id", validateSchema(updateStudent12ValidationSchema), updateStudents);
 
 /**
  * @swagger
@@ -162,5 +181,29 @@ students.put("/updateStudents/:id", updateStudents);
  *         descriptio: Interval server error
  */
 students.delete("/deleteStudent/:id", deleteStudent);
+
+/**
+ * @swagger
+ * /students/searchStudent:
+ *   get:
+ *     summary: student ni qidirish
+ *     tags: [Students]
+ *     description: Qidiruv so'rovi orqali student izlash
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         description: Qidiruv so'rovi orqali student izlash
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *      '200':
+ *        description: Qidiruv natijalari muvaffaqiyatli qaytarildi
+ *      '404':
+ *        description: student topilmadi
+ *      '500':
+ *        description: Ichki server xatosi
+ */
+students.get("/searchStudent", searchStudent);
 
 module.exports = {students}

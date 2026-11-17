@@ -165,10 +165,39 @@ const groupDelete = async (req, res) => {
   }
 };
 
+// ----------- Search Group ----------- //
+const searchGroup = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    if (!query || typeof query != "string") {
+      return res.status(400).json({ message: "Invalid search query" });
+    }
+
+    const result = await Group.find({
+      $or: [
+        { group_name: { $regex: query, $options: "i" } },
+        { lesson_start_time: { $regex: query, $options: "i" } },
+        { lesson_week_day: { $regex: query, $options: "i" } },
+        { room_number: { $regex: query, $options: "i" } },
+      ],
+    });
+
+    if (result.length === 0) {
+      return res.json({ message: "Bunday group topilmadi" });
+    }
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching group:", error);
+    res.status(500).json({ message: "Server error: Failed to fetch group" });
+  }
+};
+
 module.exports = {
   addGroup,
   getGroup,
   getGroupById,
   updateGroup,
   groupDelete,
+  searchGroup,
 };

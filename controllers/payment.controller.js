@@ -1,4 +1,5 @@
 const { Payment } = require("../model/paymentSchema");
+const { Student } = require("../model/studentsSchema");
 
 // add Payment
 const addPayment = async (req, res) => {
@@ -141,10 +142,57 @@ const deletePayment = async (req, res) => {
   }
 };
 
+// ----------- Search Payment ----------- //
+const searchPayment = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    if (!query || typeof query != "string") {
+      return res.status(400).json({ message: "Invalid search query" });
+    }
+
+    const matchingStudents = await Student.find({
+      $or: [
+        { first_name: { $regex: query, $options: "i" } },
+        { last_name: { $regex: query, $options: "i" } },
+        { phone_number: { $regex: query, $options: "i" } },
+      ],
+    }).select("_id");
+
+    const studentIds = matchingStudents.map((s) => s._id);
+
+    const orConditions = [];
+    if (studentIds.length > 0) {
+      orConditions.push({ students_id: { $in: studentIds } });
+    }
+
+    const mongoose = require("mongoose");
+    if (mongoose.Types.ObjectId.isValid(query)) {
+      orConditions.push({ students_id: query });
+      orConditions.push({ _id: query });
+    }
+
+    if (orConditions.length === 0) {
+      return res.json({ message: "Bunday payment topilmadi" });
+    }
+
+    const result = await Payment.find({ $or: orConditions }).populate("students_id");
+
+    if (result.length === 0) {
+      return res.json({ message: "Bunday payment topilmadi" });
+    }
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching payment:", error);
+    res.status(500).json({ message: "Server error: Failed to fetch payment" });
+  }
+};
+
 module.exports = {
   addPayment,
   getPayments,
   getPaymentById,
   updatePayment,
   deletePayment,
+  searchPayment,
 };

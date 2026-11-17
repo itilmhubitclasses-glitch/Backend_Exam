@@ -7,6 +7,7 @@ const {
   getLessonById,
   updateLesson,
   deleteLesson,
+  searchLesson,
 } = require("../controllers/lesson.controller");
 
 const {
@@ -175,4 +176,28 @@ lesson.put("/updateLesson/:id",validateSchema(updateLesson8ValidationSchema) ,up
  */
 lesson.delete("/deleteLesson/:id", deleteLesson);
 
-module.exports = {lesson}
+/**
+ * @swagger
+ * /lesson/searchLesson:
+ *   get:
+ *     summary: lesson ni qidirish
+ *     tags: [Lesson]
+ *     description: Qidiruv so'rovi orqali lesson izlash
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         description: Qidiruv so'rovi orqali lesson izlash
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *      '200':
+ *        description: Qidiruv natijalari muvaffaqiyatli qaytarildi
+ *      '404':
+ *        description: lesson topilmadi
+ *      '500':
+ *        description: Ichki server xatosi
+ */
+lesson.get("/searchLesson", searchLesson);
+
+module.exports = {lesson};

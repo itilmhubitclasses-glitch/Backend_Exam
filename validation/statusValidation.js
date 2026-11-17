@@ -11,4 +11,6 @@ const updateStatus9ValidationSchema = Joi.object({
 module.exports = {
   createStatus9ValidationSchema,
   updateStatus9ValidationSchema,
+  createLidStatus9ValidationSchema: createStatus9ValidationSchema,
+  updateLidStatus9ValidationSchema: updateStatus9ValidationSchema,
 };

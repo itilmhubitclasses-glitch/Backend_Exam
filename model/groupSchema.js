@@ -12,7 +12,7 @@ const userSchema = new Schema({
   branch_id: { type: Schema.Types.ObjectId, ref: Branch, default: null },
   lessons_quant: { type: String, default: "" },
   is_active: { type: Boolean },
-});
+}); 
 
 const Group = model("group", userSchema);
 module.exports = { Group };

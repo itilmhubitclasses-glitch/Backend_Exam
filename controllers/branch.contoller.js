@@ -125,10 +125,38 @@ const branchDelete = async (req, res) => {
   }
 };
 
+// ----------- Search Branch ----------- //
+const searchBranch = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    if (!query || typeof query != "string") {
+      return res.status(400).json({ message: "Invalid search query" });
+    }
+
+    const result = await Branch.find({
+      $or: [
+        { nameb: { $regex: query, $options: "i" } },
+        { address: { $regex: query, $options: "i" } },
+        { call_number: { $regex: query, $options: "i" } },
+      ],
+    });
+
+    if (result.length === 0) {
+      return res.json({ message: "Bunday branch topilmadi" });
+    }
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching branch:", error);
+    res.status(500).json({ message: "Server error: Failed to fetch branch" });
+  }
+};
+
 module.exports = {
-addBranch,
-getBranch,
-getBranchById,
-updateBranch,
-branchDelete
-}
+  addBranch,
+  getBranch,
+  getBranchById,
+  updateBranch,
+  branchDelete,
+  searchBranch,
+};

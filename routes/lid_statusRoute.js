@@ -7,7 +7,26 @@ const {
   getLid_statusById,
   updateLid_status,
   lid_statusDelete,
+  searchLid_status,
 } = require("../controllers/lid_status.controller");
+
+const {
+  createStatus9ValidationSchema,
+  updateStatus9ValidationSchema,
+} = require("../validation/statusValidation");
+
+const validateSchema = (schema) => (req, res, next) => {
+  const validationResult = schema.validate(req.body);
+
+  if (validationResult.error) {
+    return res.status(400).json({
+      success: false,
+      message: validationResult.error.details[0].message,
+    });
+  }
+
+  next();
+};
 
 /**
  * @swagger
@@ -39,7 +58,7 @@ const {
  *        description: Ichki server xatosi.
  *
  */
-lid_status.post("/addLid_status",addLid_status);
+lid_status.post("/addLid_status", validateSchema(createStatus9ValidationSchema), addLid_status);
 
 /**
  * @swagger
@@ -114,7 +133,7 @@ lid_status.get("/getLid_statusById/:id", getLid_statusById);
  *       '500':
  *         description: Ichki server xatosi
  */
-lid_status.put("/updateLid_status/:id",updateLid_status);
+lid_status.put("/updateLid_status/:id", validateSchema(updateStatus9ValidationSchema), updateLid_status);
 
 /**
  * @swagger
@@ -140,5 +159,29 @@ lid_status.put("/updateLid_status/:id",updateLid_status);
  */
 lid_status.delete("/lid_statusDelete/:id", lid_statusDelete);
 
+/**
+ * @swagger
+ * /lid_status/searchLid_status:
+ *   get:
+ *     summary: lid_status ni qidirish
+ *     tags: [lid_status]
+ *     description: Qidiruv so'rovi orqali lid_status izlash
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         description: Qidiruv so'rovi orqali lid_status izlash
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *      '200':
+ *        description: Qidiruv natijalari muvaffaqiyatli qaytarildi
+ *      '404':
+ *        description: lid_status topilmadi
+ *      '500':
+ *        description: Ichki server xatosi
+ */
+lid_status.get("/searchLid_status", searchLid_status);
 
 module.exports = { lid_status };
+

@@ -126,10 +126,37 @@ const deleteLesson = async (req, res) => {
   }
 };
 
+// ----------- Search Lesson ----------- //
+const searchLesson = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    if (!query || typeof query != "string") {
+      return res.status(400).json({ message: "Invalid search query" });
+    }
+
+    const result = await Lesson.find({
+      $or: [
+        { lesson_theme: { $regex: query, $options: "i" } },
+        { lesson_date: { $regex: query, $options: "i" } },
+      ],
+    });
+
+    if (result.length === 0) {
+      return res.json({ message: "Bunday lesson topilmadi" });
+    }
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching lesson:", error);
+    res.status(500).json({ message: "Server error: Failed to fetch lesson" });
+  }
+};
+
 module.exports = {
   addLesson,
   getLesson,
   getLessonById,
   updateLesson,
   deleteLesson,
+  searchLesson,
 };

@@ -7,6 +7,7 @@ const {
   getLidById,
   updateLid,
   deleteLid,
+  searchLid,
 } = require("../controllers/lid.controller");
 
 const {
@@ -190,5 +191,30 @@ lid.put("/updateLid/:id", validateSchema(updateLidValidationSchema), updateLid);
  *         descriptio: Interval server error
  */
 lid.delete("/deleteLid/:id", deleteLid);
+
+/**
+ * @swagger
+ * /lid/searchLid:
+ *   get:
+ *     summary: lid ni qidirish
+ *     tags: [Lids]
+ *     description: Qidiruv so'rovi orqali lid izlash
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         description: Qidiruv so'rovi orqali lid izlash
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *      '200':
+ *        description: Qidiruv natijalari muvaffaqiyatli qaytarildi
+ *      '404':
+ *        description: lid topilmadi
+ *      '500':
+ *        description: Ichki server xatosi
+ */
+lid.get("/searchLid", searchLid);
+lid.get("/search", searchLid);
 
 module.exports = { lid };

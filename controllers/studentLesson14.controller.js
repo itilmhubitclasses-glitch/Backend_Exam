@@ -128,7 +128,7 @@ const updateStudentLesson14 = async (req, res) => {
     }
     res.json({
       success: true,
-      message: "student_lesson yangilandi",
+      message: "student_lesson yangilandi", 
       student_lesson: updateStudentLesson,
     });
   } catch (err) {

@@ -1,6 +1,8 @@
 const { Router } = require("express");
 const studentLesson14 = Router();
 
+// 6af83468508ae4c2c968b8a3 student id ishlatish uchunn
+// 6afc351923f15a52e52bd239 lesson id for example
 const {
   addStudentLesson14,
   getStudentLesson14,
@@ -27,7 +29,6 @@ const validateSchema = (schema) => (req, res, next) => {
 
   next();
 };
-
 
 /**
  * @swagger
@@ -190,6 +191,7 @@ studentLesson14.delete("/deleteStudentLesson14/:id", deleteStudentLesson14);
  *       '500':
  *         description: Server xatosi
  */
-studentLesson14.put("/updateStudentLesson14ById/:id",validateSchema(updateStudentLesson14) ,updateStudentLesson14);
+studentLesson14.put("/updateStudentLesson14ById/:id", validateSchema(updateStudentLesson14ValidationSchema), updateStudentLesson14);
+studentLesson14.put("/updateStudentLesson14/:id", validateSchema(updateStudentLesson14ValidationSchema), updateStudentLesson14);
 
 module.exports = { studentLesson14 };

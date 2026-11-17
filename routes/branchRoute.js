@@ -7,6 +7,7 @@ const {
     getBranchById,
     updateBranch,
     branchDelete,
+    searchBranch,
 } = require("../controllers/branch.contoller");
 
 const {
@@ -170,5 +171,29 @@ branch.put("/updateBranch/:id", validateSchema(updateBranch5ValidationSchema),up
  *         description: Internal server hatosi
  */
 branch.delete("/branchDelete/:id", branchDelete);
+
+/**
+ * @swagger
+ * /branch/searchBranch:
+ *   get:
+ *     summary: branch ni qidirish
+ *     tags: [Branch]
+ *     description: Qidiruv so'rovi orqali branch izlash
+ *     parameters:
+ *       - in: query
+ *         name: query
+ *         description: Qidiruv so'rovi orqali branch izlash
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *      '200':
+ *        description: Qidiruv natijalari muvaffaqiyatli qaytarildi
+ *      '404':
+ *        description: branch topilmadi
+ *      '500':
+ *        description: Ichki server xatosi
+ */
+branch.get("/searchBranch", searchBranch);
 
 module.exports = {branch}

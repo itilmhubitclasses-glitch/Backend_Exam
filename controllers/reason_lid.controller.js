@@ -123,10 +123,36 @@ const reason_lidDelete = async (req, res) => {
   }
 };
 
+// ----------- Search Reason_lid ----------- //
+const searchReason_lid = async (req, res) => {
+  try {
+    const { query } = req.query;
+
+    if (!query || typeof query != "string") {
+      return res.status(400).json({ message: "Invalid search query" });
+    }
+
+    const result = await Reason_lid.find({
+      $or: [
+        { reason_lid: { $regex: query, $options: "i" } },
+      ],
+    });
+
+    if (result.length === 0) {
+      return res.json({ message: "Bunday reason_lid topilmadi" });
+    }
+    res.json(result);
+  } catch (error) {
+    console.error("Error fetching reason_lid:", error);
+    res.status(500).json({ message: "Server error: Failed to fetch reason_lid" });
+  }
+};
+
 module.exports = {
-    addReason_lid,
-    getReason_lid,
-    getReason_lidById,
-    updateReason_lid,
-    reason_lidDelete,
-}
+  addReason_lid,
+  getReason_lid,
+  getReason_lidById,
+  updateReason_lid,
+  reason_lidDelete,
+  searchReason_lid,
+};
